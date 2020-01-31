@@ -5,6 +5,10 @@ app.set('views','./views'); //관습적으로 jade파일은 views라는 폴더�
 app.set('view engine','jade'); //view engine을 jade로 하겠다 라는 의미
 app.use(express.static('public'));//public이라는 디렉토리를 정적인 파일의 위치로 고정하겠다라는 의미.. 정적서비스를 할때 써야함
 //url에 public/c1.jpg라고 안하고 /c1.jpg라고 해도 public의 c1.jpg파일이 나옴
+app.get('/topic',(req,res)=>{
+
+    res.send(req.query.id+','+req.query.name); //query String으로 전달되는 변수를 query.변수명으로 해주면 됨,복수개를 받을 수 있음
+});
 app.get('/template',(req,res)=>{
     
     res.render('temp',{time:Date(),title:'jade 재밌당'}); //랜더링 : 소스코드를 가져와서 화면을 만드는 과정 ,이 명령은 랜더링을 하는 명령
