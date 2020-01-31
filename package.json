@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/kboysm/node.js_study#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "underscore": "^1.9.2"
   }
 }
