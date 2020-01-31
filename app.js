@@ -5,19 +5,23 @@ app.set('views','./views'); //관습적으로 jade파일은 views라는 폴더�
 app.set('view engine','jade'); //view engine을 jade로 하겠다 라는 의미
 app.use(express.static('public'));//public이라는 디렉토리를 정적인 파일의 위치로 고정하겠다라는 의미.. 정적서비스를 할때 써야함
 //url에 public/c1.jpg라고 안하고 /c1.jpg라고 해도 public의 c1.jpg파일이 나옴
-app.get('/topic',(req,res)=>{
+app.get('/topic/:id',(req,res)=>{ // /topic?id=1 ->쿼리스트링 , /topic/1 -> semantic url
     let topics =[
         'Javascript is ...',
         'Node.js is ...',
         'Express is...'
     ];
     let output=`
-        <a href='/topic?id=0'>JavaScript</a><br>
-        <a href='/topic?id=1'>Node.js</a><br>
-        <a href='/topic?id=2'>Express</a><br><br>
-        ${topics[req.query.id]}
+        <a href='/topic/0'>JavaScript</a><br>
+        <a href='/topic/1'>Node.js</a><br>
+        <a href='/topic/2'>Express</a><br><br>
+        ${topics[req.params.id]}
     `
+    //${topics[req.query.id]} 이녀석은 쿼리스트링용 ,${topics[req.params.id]}는 시멘틱 url용
     res.send(output); //query String으로 전달되는 변수를 query.변수명으로 해주면 됨,복수개를 받을 수 있음
+});
+app.get('/topic/:id/:mode',(req,res)=>{
+    res.send(req.params.id+','+req.params.mode);
 });
 app.get('/template',(req,res)=>{
     
