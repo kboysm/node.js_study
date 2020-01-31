@@ -1,7 +1,14 @@
 let express = require('express');
 let app =express();
+app.locals.pretty =true;
+app.set('views','./views'); //관습적으로 jade파일은 views라는 폴더안에 넣는다.
+app.set('view engine','jade'); //view engine을 jade로 하겠다 라는 의미
 app.use(express.static('public'));//public이라는 디렉토리를 정적인 파일의 위치로 고정하겠다라는 의미.. 정적서비스를 할때 써야함
 //url에 public/c1.jpg라고 안하고 /c1.jpg라고 해도 public의 c1.jpg파일이 나옴
+app.get('/template',(req,res)=>{
+    
+    res.render('temp',{time:Date(),title:'jade 재밌당'}); //랜더링 : 소스코드를 가져와서 화면을 만드는 과정 ,이 명령은 랜더링을 하는 명령
+});
 app.get('/',(req,res)=>{ //req,res는 약속임
     res.send('Hello home page');
 }); //사용자가 웹서버에 접속할때는 get,post방식으로 접속하는데 일반적으로 url을 치고들어오는것은 get방식이므로 get메서드를 사용해서 받아드림
