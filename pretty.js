@@ -7,3 +7,5 @@ hello('Lsm');
 //명령은 해당 디렉토리에서 uglify pretty.js -m 을 해주면 펑션의 name이 o로 바뀐다. 지역변수같은 이름을 바꿔도 상관이 없는 녀석들을 한글자의 가장 짧은 글자로 압축한다.
 //실제로 파일로 저장하는 법 uglifyjs pretty.js pretty.min.js -m 으로 저장한다.
 // 파일 이름에 min이 붙은것은 작게 만든 파일이라는 뜻 최소화된 파일이라는 약속
+
+//npm init으로 package.json파일을 만들 수 있다.

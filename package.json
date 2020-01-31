@@ -1,0 +1,22 @@
+{
+  "name": "server_side_javascript",
+  "version": "1.0.0",
+  "description": "server side javascript tutorials",
+  "main": "pretty.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kboysm/node.js_study.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kboysm/node.js_study/issues"
+  },
+  "homepage": "https://github.com/kboysm/node.js_study#readme",
+  "dependencies": {
+    "underscore": "^1.9.2"
+  }
+}
