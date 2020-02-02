@@ -1,16 +1,24 @@
 let express = require('express');
+let bodyParser = require('body-parser'); //바디파서라는 모듈을 가져오고!
 let app =express();
 app.locals.pretty =true;
 app.set('views','./views'); //관습적으로 jade파일은 views라는 폴더안에 넣는다.
 app.set('view engine','jade'); //view engine을 jade로 하겠다 라는 의미
 app.use(express.static('public'));//public이라는 디렉토리를 정적인 파일의 위치로 고정하겠다라는 의미.. 정적서비스를 할때 써야함
 //url에 public/c1.jpg라고 안하고 /c1.jpg라고 해도 public의 c1.jpg파일이 나옴
+app.use(bodyParser.urlencoded({extended:false}))//모든 요청을 먼저 받아서 get,post인지 판단하고 개발자가 사용할수 있도록 해줌
 app.get('/form',(req,res)=>{
     res.render('form');
 });
 app.get('/form_receiver',(req,res)=>{
     let title =req.query.title;
     let description = req.query.description;
+    res.send(title+','+description);
+});
+app.post('/form_receiver',(req,res)=>{ //express에서 post data는 기본적으로 undefined이므로 사용하기 위해서는 body-parser가 필요함
+    //req.body는 바디파서 모듈을 다운받고 use해 주지 않으면 사용못함
+    let title =req.body.title;
+    let description = req.body.description;
     res.send(title+','+description);
 });
 app.get('/topic/:id',(req,res)=>{ // /topic?id=1 ->쿼리스트링 , /topic/1 -> semantic url
