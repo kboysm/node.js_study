@@ -5,6 +5,14 @@ app.set('views','./views'); //관습적으로 jade파일은 views라는 폴더�
 app.set('view engine','jade'); //view engine을 jade로 하겠다 라는 의미
 app.use(express.static('public'));//public이라는 디렉토리를 정적인 파일의 위치로 고정하겠다라는 의미.. 정적서비스를 할때 써야함
 //url에 public/c1.jpg라고 안하고 /c1.jpg라고 해도 public의 c1.jpg파일이 나옴
+app.get('/form',(req,res)=>{
+    res.render('form');
+});
+app.get('/form_receiver',(req,res)=>{
+    let title =req.query.title;
+    let description = req.query.description;
+    res.send(title+','+description);
+});
 app.get('/topic/:id',(req,res)=>{ // /topic?id=1 ->쿼리스트링 , /topic/1 -> semantic url
     let topics =[
         'Javascript is ...',
