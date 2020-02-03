@@ -9,6 +9,16 @@ app.set('view engine','jade');
 app.get('/topic/new',(req,res)=>{
     res.render('new');
 });
+app.get('/topic',(req,res)=>{
+    fs.readdir('data',(err,files)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send('Internal Server Error');
+        }
+        
+        res.render('view',{topics:files});
+    });
+});
 app.post('/topic',(req,res)=>{
     let title = req.body.title;
     let description = req.body.description;
