@@ -6,17 +6,28 @@ let connection = mysql.createConnection({
     database : 'o2'
 });
 connection.connect();
-
+/*
 let sql = 'select * from topic';
 connection.query(sql,(err,rows,fields)=>{
     if(err){
         console.log(err);
     }else{
-        console.log('rows',rows);
-        console.log('fields',fields);
+        for(let i=0; i<rows.length;i++){
+            console.log(rows[i].title);
+        }
     }
-
 });
+*/
+let sql = 'insert into topic (title,description,author) values(?,?,?)';
+let params=['Supervisor','Watcher','graphittie'];
+connection.query(sql,params,(err,rows,fields)=>{
+    if(err){
+        console.log(err);
+    }else{
+        console.log(rows.insertId);
+    }
+});
+connection.end();
 /*오류 발생
 Client does not support authentication protocol requested by server; consider upgrading MySQL client
 
