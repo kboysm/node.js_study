@@ -34,48 +34,24 @@ app.get('/topic/new',(req,res)=>{
     });
 });
 app.get(['/topic','/topic/:id'],(req,res)=>{
-    /*
-    fs.readdir('data',(err,files)=>{
-        if(err){
-            console.log(err);
-            res.status(500).send('Internal Server Error');
-        }
+    let sql = 'select id,title from topic';
+    conn.query(sql,(err,topics,fields)=>{
         let id = req.params.id;
-        if(id){        //id값이 있을 때
-            fs.readFile('data/'+id,'utf-8',(err,data)=>{
-                if(err){
-                    console.log(err);
-                    res.status(500).send('Internal Server Error');
-                }
-                res.render('view',{topics:files,title:id,description:data});
+        if(id){
+            let sql = 'select * from topic where id=?'
+            conn.query(sql,[id],(err,topic,fields)=>{
+            if(err){
+                console.log(err);
+                res.status(500).send('Internal Server Error');
+            }else{
+                res.render('view',{topics:topics,topic:topic[0]});
+            }
             });
-        }else{        //id값이 없을 때
-            res.render('view',{topics:files,title:'Welcome',description:'Hello JavaScript for Server.'});
+        }else{
+            res.render('view',{topics:topics});
         }
     });
-    */
-   let sql = 'select id,title from topic';
-   conn.query(sql,(err,topics,fields)=>{
-       res.render('view',{topics:topics});
-   });
 });
-// app.get('/topic/:id',(req,res)=>{
-//     let id = req.params.id;
-
-//     fs.readdir('data',(err,files)=>{
-//         if(err){
-//             console.log(err);
-//             res.status(500).send('Internal Server Error');
-//         }
-//         fs.readFile('data/'+id,'utf-8',(err,data)=>{
-//             if(err){
-//                 console.log(err);
-//                 res.status(500).send('Internal Server Error');
-//             }
-//             res.render('view',{topics:files,title:id,description:data});
-//         });
-//     });
-// }); 코드 중복으로 인해 위의 app.get의 url 값을 배열처리하여 하나로 합침
 app.post('/topic',(req,res)=>{
     let title = req.body.title;
     let description = req.body.description;
