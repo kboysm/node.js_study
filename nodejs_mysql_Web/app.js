@@ -24,15 +24,30 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.locals.pretty=true;
 app.set('views','./views_mysql');
 app.set('view engine','jade');
-app.get('/topic/new',(req,res)=>{
-    fs.readdir('data',(err,files)=>{
+app.get('/topic/add',(req,res)=>{
+    let sql = 'select id,title from topic';
+    conn.query(sql,(err,topics,fields)=>{
         if(err){
             console.log(err);
             res.status(500).send('Internal Server Error');
         }
-        res.render('new',{topics:files});
+        res.render('add',{topics:topics});
     });
 });
+app.post('/topic/add',(req,res)=>{
+    let title = req.body.title;
+    let author = req.body.author;
+    let description = req.body.description;
+    let sql = "insert into topic (title,description,author) values(?,?,?)";
+    conn.query(sql,[title,description,author],(err,result,fields)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send("Internal Server Error");
+        }else{
+            res.redirect('/topic/'+result.insertId);
+        }
+    });
+})
 app.get(['/topic','/topic/:id'],(req,res)=>{
     let sql = 'select id,title from topic';
     conn.query(sql,(err,topics,fields)=>{
@@ -52,16 +67,6 @@ app.get(['/topic','/topic/:id'],(req,res)=>{
         }
     });
 });
-app.post('/topic',(req,res)=>{
-    let title = req.body.title;
-    let description = req.body.description;
-    fs.writeFile('data/'+title,description,(err)=>{
-        if(err){
-            res.status(500).send('Internal Server Error');
-        }
-        res.redirect('/topic/'+title);
-    });
-})
 app.listen(3000,()=>{
     console.log("Connected , 3000 Port");
 });
