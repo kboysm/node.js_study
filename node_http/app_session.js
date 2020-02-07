@@ -1,6 +1,8 @@
 let express = require('express');
+let bodyParser = require('body-parser');
 let session = require('express-session'); //기본적으로 세션은 메모리에 저장해둠. app을 껏다키면 날라감
 let app = express();
+app.use(bodyParser.urlencoded({extended:false}));
 app.use(session({
     secret: '123JOPJ@#$%1269',
     resave: false,
@@ -15,11 +17,40 @@ app.get('/count',(req,res)=>{
     }
     res.send('count : '+req.session.count);
 });
+app.post('/auth/login',(req,res)=>{
+    let user = {
+        username:'Lsm',
+        password:'1234',
+        displayName:'nickNameLSM'
+    }; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
+    let uname=req.body.username;
+    let pwd =req.body.password;
+    if(uname === user.username && pwd ===user.password){
+        req.session.displayName = user.displayName;
+        res.redirect('/welcome');
+    }else{
+        res.send('who are you?<a href="/auth/login>Login</a>');
+    }
+});
+app.get('/welcome',(req,res)=>{
+    if(req.session.displayName){
+        res.send(`
+        <h1>hello,${req.session.displayName} </h1>
+        `);
+    }else{
+        res.send(`
+        <h1>Welcome</h1>
+        <a href="/auth/login">Login</a>
+        `);
+
+    }
+});
 app.get('/auth/login',(req,res)=>{
     let output=`
+    <h1>Login</h1>
     <form action="/auth/login" method="post">
         <p>
-            <input type="text" name="id" placeholder="username">
+            <input type="text" name="username" placeholder="username">
         </p>
         <p>
             <input type="password" name="password" placeholder="password">
@@ -29,7 +60,7 @@ app.get('/auth/login',(req,res)=>{
         </p>
     </form>
     `;
-    res.send('hello login');
+    res.send(output);
 });
 
 app.listen(3003,()=>{
