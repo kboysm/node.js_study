@@ -15,6 +15,22 @@ app.get('/products',(req,res)=>{
     }
     res.send(`<h1>Products</h1><ul>${output}</ul><a href="/cart">Cart</a>`);
 });
+app.get('/cart',(req,res)=>{
+    let cart = req.cookies.cart;
+    let output='';
+    if(!cart){
+        res.send('Empty');
+    }else{
+        for(let id in cart){
+            output +=`<li>${products[id].title} (${cart[id]}개)</li>`;
+        }
+    }
+    res.send(`
+    <h1>Cart</h1>
+    <ul>${output}</ul>
+    <a href="/products">Products List</a>`
+    );
+});
 app.get('/cart/:id',(req,res)=>{
     let id = req.params.id;
     let cart;
@@ -28,7 +44,7 @@ app.get('/cart/:id',(req,res)=>{
     }
     cart[id]=parseInt(cart[id])+1; 
     res.cookie('cart',cart);
-    res.redirect('cart');
+    res.redirect('/cart');
 });
 /*
 cart={
