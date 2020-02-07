@@ -21,6 +21,7 @@
     "clean-css": "^4.2.3",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
     "jade": "^1.11.0",
     "multer": "^1.4.2",
     "node-mysql": "^0.4.2",
