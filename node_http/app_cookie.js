@@ -17,9 +17,24 @@ app.get('/products',(req,res)=>{
 });
 app.get('/cart/:id',(req,res)=>{
     let id = req.params.id;
-    res.send('h'+id);
+    let cart;
+    if(req.cookies.cart){
+        cart =req.cookies.cart;
+    }else{
+        cart ={};
+    }
+    if(!cart[id]){
+        cart[id]=0; 
+    }
+    cart[id]=parseInt(cart[id])+1; 
+    res.cookie('cart',cart);
+    res.redirect('cart');
 });
+/*
+cart={
 
+}
+*/
 
 
 
