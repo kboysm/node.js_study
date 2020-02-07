@@ -17,6 +17,10 @@ app.get('/count',(req,res)=>{
     }
     res.send('count : '+req.session.count);
 });
+app.get('/auth/logout',(req,res)=>{
+    delete req.session.displayName; //세션을 제거 , 자바스크립트 명령임
+    res.redirect('/welcome');
+});
 app.post('/auth/login',(req,res)=>{
     let user = {
         username:'Lsm',
@@ -36,6 +40,7 @@ app.get('/welcome',(req,res)=>{
     if(req.session.displayName){
         res.send(`
         <h1>hello,${req.session.displayName} </h1>
+        <a href="/auth/logout">logout</a>
         `);
     }else{
         res.send(`
