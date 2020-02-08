@@ -2,6 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser');
 let session = require('express-session'); //기본적으로 세션은 메모리에 저장해둠. app을 껏다키면 날라감
 let MySQLStore = require('express-mysql-session')(session);
+let md5 = require('md5');
 let app = express();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(session({
@@ -34,12 +35,12 @@ app.get('/auth/logout',(req,res)=>{
 app.post('/auth/login',(req,res)=>{
     let user = {
         username:'Lsm',
-        password:'1234',
+        password:'81dc9bdb52d04dc20036dbd8313ed055',
         displayName:'nickNameLSM'
     }; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
     let uname=req.body.username;
     let pwd =req.body.password;
-    if(uname === user.username && pwd ===user.password){
+    if(uname === user.username && md5(pwd) ===user.password){
         req.session.displayName = user.displayName;
         res.redirect('/welcome');
     }else{
