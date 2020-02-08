@@ -2,7 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser');
 let session = require('express-session'); //기본적으로 세션은 메모리에 저장해둠. app을 껏다키면 날라감
 let MySQLStore = require('express-mysql-session')(session);
-let md5 = require('md5');
+let sha256 = require('sha256');
 let app = express();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(session({
@@ -32,15 +32,20 @@ app.get('/auth/logout',(req,res)=>{
         res.redirect('/welcome'); //DB에 저장이 끝났을 때 실행하라! 이거 아주중요 내가 프로젝트 할 때 경험했던 문제임 , 콜백의 중요성
     });
 });
+
 app.post('/auth/login',(req,res)=>{
-    let user = {
+    let user = 
+    {
         username:'Lsm',
-        password:'81dc9bdb52d04dc20036dbd8313ed055',
+        password:'34c7edec6fae612f12e74fae8b05e49b29b069f624925135b3d27dc04deb037f',
+        salt : '!@#$#$%!@1234', //사용자의 각각의 salt값을 다르게하면 설령 비번이 동일한 사용자가 있더라도 password의 값이 다르다
         displayName:'nickNameLSM'
-    }; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
+    }
+    //현시점에서 암호화는 sha256을 사용함
+    ; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
     let uname=req.body.username;
     let pwd =req.body.password;
-    if(uname === user.username && md5(pwd) ===user.password){
+    if(uname === user.username && sha256(pwd+user.salt) ===user.password){
         req.session.displayName = user.displayName;
         res.redirect('/welcome');
     }else{
