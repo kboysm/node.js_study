@@ -58,14 +58,13 @@ passport.use(new LocalStrategy(
     }else{
         done(null,false);
     }
-    done(null,false);
     }
 ));
 app.post('/auth/login',passport.authenticate('local',{
     successRedirect:'/welcome',
     failureRedirect:'/auth/login',
     failureFlash:false
-}))
+}));
 // app.post('/auth/login',(req,res)=>{
 //     let user = {
 //         username:'Lsm',
