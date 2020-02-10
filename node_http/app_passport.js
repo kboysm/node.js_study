@@ -29,21 +29,43 @@ app.get('/auth/logout',(req,res)=>{
     delete req.session.displayName; //세션을 제거 , 자바스크립트 명령임
     res.redirect('/welcome');
 });
-app.post('/auth/login',(req,res)=>{
-    let user = {
+passport.use(new LocalStrategy(
+    (username,password,done)=>{
+             let user = {
         username:'Lsm',
         password:'1234',
         displayName:'nickNameLSM'
     }; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
-    let uname=req.body.username;
-    let pwd =req.body.password;
+    let uname=username;
+    let pwd =password;
     if(uname === user.username && pwd ===user.password){
-        req.session.displayName = user.displayName;
-        res.redirect('/welcome');
+        done(null,user);
     }else{
-        res.send('who are you?<a href="/auth/login>Login</a>');
+        done(null,false);
     }
-});
+    done(null,false,{message:'없는 유저'});
+    }
+));
+app.post('/auth/login',passport.authenticate('local',{
+    successRedirect:'/welcome',
+    failureRedirect:'/auth/login',
+    failureFlash:false
+}))
+// app.post('/auth/login',(req,res)=>{
+//     let user = {
+//         username:'Lsm',
+//         password:'1234',
+//         displayName:'nickNameLSM'
+//     }; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
+//     let uname=req.body.username;
+//     let pwd =req.body.password;
+//     if(uname === user.username && pwd ===user.password){
+//         req.session.displayName = user.displayName;
+//         res.redirect('/welcome');
+//     }else{
+//         res.send('who are you?<a href="/auth/login>Login</a>');
+//     }
+// });
 app.get('/welcome',(req,res)=>{
     if(req.session.displayName){
         res.send(`
