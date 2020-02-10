@@ -8,3 +8,5 @@ displayName varchar(50),
 primary key(id),
 unique (authId)
 ) ENGINE =InnoDB;
+
+alter table users add email varchar(50);

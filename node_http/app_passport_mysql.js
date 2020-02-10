@@ -31,13 +31,7 @@ app.use(session({
   }));
 app.use(passport.initialize());
 app.use(passport.session());
-let users = 
-[{
-    username:'Lsm',
-    password:'8Y5Hg2OnCv8nJgCs2Mo+c8MYCFcedZxC6TUmy7W5kMPY+O0NKOO+bcjh5ofUAIF9SlpD9af36WkqqLlPcUSydVntnhXSkHM6wx+cmOOPEWZ7V3/MgaSwSSiNEwYhnBoQ9QtG/DLnuIYcD7004RbdKLbK856Hl24RVUl1cPczVPo=',
-    salt : 'J5qJREh1sj68/Bbj+ZJaxc1Y1QKAPpy18UKFUO2rkgH1S8up39lLRUqx9nnmpfGa5uKlCPp3diG11H/KBgY2oQ==', //사용자의 각각의 salt값을 다르게하면 설령 비번이 동일한 사용자가 있더라도 password의 값이 다르다
-    displayName:'nickNameLSM'
-}];
+
 //여기 있는 session코드는 app.use(session)코드 아래 존재해야 함
 
 app.get('/count',(req,res)=>{
@@ -104,21 +98,28 @@ passport.use(new FacebookStrategy({
 
       console.log(profile);
       let authId = 'facebook:'+profile.id; //페이스북의 고유 아이디값으로 이사람을 식별하겠다.
-      for(let i=0; i<user.length;i++){
-          let u =users[i];
-          if(u.authId ===authId){
-            return done(null,u);
-          }
-      }
-      let newuser =
-        {
-            'authId':authId,
-            'displayName':profile.displayName,
-            'email':profile.emails[0].value
-        };
-      
-      users.push(newuser);
-      done(null,newuser);
+      let sql = "select * from users where authId=?";
+      conn.query(sql,[authId],(err,results)=>{
+        if(results.length>0){//사용자가 존재한다면
+            done(null,results[0]);
+        }else{//사용자가 없다면
+            let newuser =
+            {
+                'authId':authId,
+                'displayName':profile.displayName,
+                'email':profile.emails[0].value
+            };
+            let sql = "insert into users set ?";
+            conn.query(sql,[],(err,results)=>{
+                if(err){
+                    console.log(err);
+                    done('Error');
+                }else{
+                    done(null,newuser);
+                }
+            });
+        }
+      });
   }
 ));
 app.get('/auth/facebook',
