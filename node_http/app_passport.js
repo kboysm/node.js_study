@@ -25,25 +25,40 @@ app.get('/count',(req,res)=>{
     }
     res.send('count : '+req.session.count);
 });
+
 app.get('/auth/logout',(req,res)=>{
     delete req.session.displayName; //세션을 제거 , 자바스크립트 명령임
     res.redirect('/welcome');
 });
-passport.use(new LocalStrategy(
-    (username,password,done)=>{
-             let user = {
+passport.serializeUser(function(user, done) {
+    done(null, user.username);
+  });
+  
+  passport.deserializeUser(function(id, done) {
+    let user = {
         username:'Lsm',
         password:'1234',
         displayName:'nickNameLSM'
-    }; //DB대신 직접박음 , 소스코드에 비번이 있는경우 굉장히 안좋은 방식
+    }; 
+        if(user.username ===id)
+            done(null, user);
+    
+  });
+passport.use(new LocalStrategy(
+    (username,password,done)=>{
+        let user = {
+            username:'Lsm',
+            password:'1234',
+            displayName:'nickNameLSM'
+        }; 
     let uname=username;
     let pwd =password;
-    if(uname === user.username && pwd ===user.password){
+    if(uname === user.username){
         done(null,user);
     }else{
         done(null,false);
     }
-    done(null,false,{message:'없는 유저'});
+    done(null,false);
     }
 ));
 app.post('/auth/login',passport.authenticate('local',{
