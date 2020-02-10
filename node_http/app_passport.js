@@ -58,6 +58,7 @@ passport.use(new LocalStrategy(
     }else{
         done(null,false);
     }
+    //이 부분에 done함수가 또 들어가면 콜백함수 에러가 발생
     }
 ));
 app.post('/auth/login',passport.authenticate('local',{
