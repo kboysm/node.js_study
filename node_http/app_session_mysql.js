@@ -47,7 +47,7 @@ app.post('/auth/login',(req,res)=>{
     let pwd =req.body.password;
     if(uname === user.username && sha256(pwd+user.salt) ===user.password){
         req.session.displayName = user.displayName;
-        res.redirect('/welcome');
+        res.redirect('/welcome'); 
     }else{
         res.send('who are you?<a href="/auth/login>Login</a>');
     }
