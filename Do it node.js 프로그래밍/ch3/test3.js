@@ -9,3 +9,4 @@ for(let i in users){console.log("name: "+users[i].name+" age: "+users[i].age)};
 let add=(a,b)=>{return a+b;}
 names.push(add);
 console.log(names[3](10,10));
+users.forEach((item,index)=>{console.log(index+"번째 "+item.name)});
