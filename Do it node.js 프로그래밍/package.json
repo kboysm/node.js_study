@@ -4,6 +4,7 @@
   "description": "",
   "main": "calc.js",
   "dependencies": {
+    "express": "^4.17.1",
     "moment": "^2.24.0",
     "nconf": "^0.10.0",
     "winston": "^3.2.1",
