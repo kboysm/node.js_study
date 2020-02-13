@@ -12,3 +12,9 @@ console.log(byteLen); //버퍼의 생성 길이를 알 수 있음
 
 let Str=buf.toString('utf-8',0,7); //버퍼안의 내용을 가져옴 utf-8방식으로 0부터 7번째까지 가져오겠다!
 console.log(Str);
+
+let buf2=Buffer.from('hello','utf8');
+console.log('buf2의 길이 : '+Buffer.byteLength(buf2));
+
+let qwe =buf2.toString('utf8',0,Buffer.byteLength(buf2));
+console.log(qwe);
