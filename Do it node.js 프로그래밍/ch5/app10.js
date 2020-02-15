@@ -37,10 +37,37 @@ let storage=multer.diskStorage({
 let upload = multer({
     storage:storage,
     limits:{
-        files:10,
-        fileSize:1024*1024*1024
+        files:10,//파일의 최대 개수
+        fileSize:1024*1024*1024 //파일의 크기
     }
 })
+router.route('/process/photo').post(upload.array('photo',1),(req,res)=>{
+    console.log('photo router 호풀');
+    let files = req.files;
+    if(files.length>0){
+    console.dir(files[0]);}
+    else{
+        console.log('파일이 없습니다.');
+    }
+    let originalname;
+    let filename;
+    let mimetype;
+    let size;
+    if(Array.isArray(files)){
+        for(let i=0;i<files.length;i++){
+            originalname = files[i].originalname;
+            filename = files[i].filename;
+            mimetype = files[i].mimetype;
+            size = files[i].size;
+        }
+    }
+    res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+    res.write("<h1>파일 업로드 성공</h1>");
+    res.write('<p>원본파일 : '+originalname+"</p>");
+    res.write('<p>저장파일 : '+filename+'</p>');
+    res.end();
+});
+
 router.route('/process/product').get((req,res)=>{
     console.log('product router');
 
