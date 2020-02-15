@@ -1,3 +1,4 @@
+
 let express = require('express');
 let http = require('http');
 let static = require('serve-static');
@@ -47,10 +48,40 @@ let upload = multer({
         fileSize:1024*1024*1024 //파일의 크기
     }
 })
+
+router.route('/login').get((req,res)=>{
+    output=`
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <br>
+    <form action="/login" method="post">
+        <input type="text" name="id" placeholder="id"><br>
+        <input type="password" name="password" placeholder="password"><br>
+        <input type="submit" value="제출">
+    </form>
+</body>
+</html>
+    `;
+    res.send(output);
+});
 router.route('/').get((req,res)=>{
+ 
+    if(req.session.user){
+        res.redirect('/loginSucess');
+    }else{
+        res.redirect('/login');
+    }
+});
+router.route('/loginSucess').get((req,res)=>{
     //res.render('index.html');
-    let file=null;
-    
+
     fs.readdir('./img',(err,files)=>{
         let output=`
     <!DOCTYPE html>
@@ -78,12 +109,42 @@ output+=`
         </table>
         <input type="submit" value="업로드">
     </form>
+    <br><br>
+    <a href="/logout">로그아웃</a>
 `;        
         res.send(output);
     })
     
 
 })
+router.route('/login').post((req,res)=>{
+    req.session.user ={
+        id:req.body.id,
+        name : "LSM",
+        authorized : true
+    };
+    res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+        res.write('<h1>로그인 성공</h1>');
+        res.write(req.body.id);
+        res.write('<br><a href="/">메인</a>')
+        res.end();
+
+});
+router.route('/logout').get((req,res)=>{
+    if(req.session.user){
+        console.log('logout');
+        req.session.destroy((err)=>{ //세션파괴
+            if(err){
+                console.log(err)
+                return;
+            }
+            res.redirect('/login');
+        })
+    }
+    else{
+        res.redirect('/login');
+    }
+});
 router.route('/img/:img').get((req,res)=>{
     fs.readFile('./img/'+req.params.img,(err,data)=>{
         console.dir(data);

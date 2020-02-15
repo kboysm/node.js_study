@@ -97,7 +97,7 @@ router.route('/process/login').post((req,res)=>{
             name : "LSM",
             authorized : true
         };
-        res.writeHead(200,{"COntent-Type":"text/html;charset=utf8"});
+        res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
         res.write('<h1>로그인 성공</h1>');
         res.write(paramId);
         res.write('<br><a href="/process/product">상품 페이지</a>')
