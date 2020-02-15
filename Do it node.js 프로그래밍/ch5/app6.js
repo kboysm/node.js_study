@@ -14,7 +14,7 @@ app.use((req,res,next)=>{
 
     //res.redirect('https://www.google.com/webhp?hl=ko&ictx=2&sa=X&ved=0ahUKEwi2re-84s_nAhWPHHAKHUFuCEcQPQgH');//구글로 리다이렉트 시킴
     let user=req.header('User-Agent');
-    let name = req.body.name || req.query.name; //get , post 둘 다 받을 수 있다.
+    let name = req.body.id || req.query.id; //get , post 둘 다 받을 수 있다.
     res.send('<p>'+user+'</p><br>'+name);
 })
 
