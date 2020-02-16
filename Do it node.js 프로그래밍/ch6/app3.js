@@ -38,6 +38,36 @@ app.use(expressSession({
 }));
 
 let router = express.Router();
+router.route('/process/update').post((req,res)=>{
+let paramId = req.body.id || req.query.id;
+if(database){
+    updateUser(database,paramId,(err,result)=>{
+        if(err){
+            console.log('에러발생');
+            res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+            res.write('<h1>err발생</h1>');
+            res.end();
+            return;
+        }
+        if(result){
+            console.dir(result);
+            res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+            res.write('<h1>사용자 수정 성공</h1>');
+            res.end();
+        }else{
+            console.log('에러발생');
+            res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+            res.write('<h1>사용자 수정 안됨</h1>');
+            res.end();
+        }
+    })
+}else{
+    console.log('에러발생');
+            res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+            res.write('<h1>데이터베이스 연결 안됨</h1>');
+            res.end();
+}
+});
 router.route('/process/delete').post((req,res)=>{
     let paramId = req.body.id || req.query.id;
     let paramPassword = req.body.password || req.query.password;
@@ -142,7 +172,23 @@ router.route('/process/login').post((req,res)=>{
     }
 });
 app.use('/',router);
-
+let updateUser = (db,id,callback)=>{
+    console.log('updateUser 호출'+id);
+    let users= db.collection('users');
+    users.updateOne({"id":id},{$set:{"name":"수정완료"}},(err,result)=>{
+        if(err){
+            callback(err,null);
+            return;
+        }
+        if(result.matchedCount >0){
+            console.log('수정완료');
+            callback(null,result); 
+        }else{
+            console.log('수정 실패');
+            callback(null,null);
+        }
+    });
+}
 let authUser = function(db,id,password,callback){
     console.log('authUser 호출 : '+id+","+password);
     let users=db.collection('users'); 
