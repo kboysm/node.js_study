@@ -185,6 +185,7 @@ app.use('/',router);
 app.all("*",(req,res)=>{
     res.status(404).send("<h1>페이지를 찾을 수 없습니다.</h1>")
 });
+
 let server = http.createServer(app).listen(app.get('port'),()=>{
     console.log(app.get('port')+"번 포트로 연결");
 })
