@@ -33,6 +33,7 @@ connectDB=function(){ //몽구스를 사용할 때는 이벤트를 많이 사용
     });
     database.on('error',console.error.bind(console,'mongoose 연결 애러.'));
 };
+
 let app = express();
 app.set('port',process.env.PORT || 1234);
 app.use('/public',static(path.join(__dirname,'public')));
@@ -123,38 +124,31 @@ app.use('/',router);
 
 let authUser = function(db,id,password,callback){
     console.log('authUser 호출 : '+id+","+password);
-    let users=db.collection('users'); 
-    //db안에 있는 users라는 컬렉션을 참조하겠다는 의미
-    users.find({"id":id,"password":password}).toArray((err,docs)=>{
+    UserModel.find({"id":id,"password":password},(err,docs)=>{
         if(err){
             callback(err,null);
             return;
         }
-        if(docs.length>0){
-            console.log('사용자를 찾음');
+        if(docs.length >0){
+            console.log('사용자 추가'+docs.insertedCount);
             callback(null,docs);
         }else{
-            console.log('일치하는 사용자를 찾지 못함.');
+            console.log('추가된 레코드가 없음');
             callback(null,null);
         }
     });
 };
 let addUser = (db,id,password,name,callback)=>{
     console.log('add User 호출'+id+" , "+password+" , "+name);
-    let users = db.collection('users');
-    users.insertMany([{"id":id,"password":password,"name":name}],(err,result)=>{
+    let user= new UserModel({"id":id,"password":password,"name":name});
+    user.save((err)=>{
         if(err){
             callback(err,null);
             return;
         }
-        if(result.insertedCount >0){
-            console.log('사용자 추가'+result.insertedCount);
-            callback(null,result);
-        }else{
-            console.log('추가된 레코드가 없음');
-            callback(null,null);
-        }
-    })
+        console.log('사용자 데이터 추가함');
+        callback(null,user);
+    });
 }
 let errorHandler = expressErrorHandler({
     static:{
