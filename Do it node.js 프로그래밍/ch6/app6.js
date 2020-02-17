@@ -65,6 +65,43 @@ app.use(expressSession({
 }));
 
 let router = express.Router();
+router.route('/process/listuser').post((req,res)=>{
+    console.log('/process/listuser 라우팅 함수 호출');
+
+    if(database){
+        UserModel.findAll((err,results)=>{
+            if(err){
+                console.log('findAll 에러발생')
+                res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+                res.write('<h1>에러 발생</h1>');
+                res.end();
+                return;
+            }
+            if(results){
+                console.dir(results);
+                res.writeHead(200,{
+                    "Content-Type":"text/html;charset=utf8"});
+                    res.write('<h3>사용자 리스트</h3>');
+                    res.write('<div><ul>');
+                    results.forEach((result,i) =>{
+                        res.write("<li>#"+i+"->"+result._doc.id+", "+result._doc.name+"</li>");
+                    })
+                    res.write("</ul></div>");
+                    res.end();
+            }else{
+                console.log('에러 발생.');
+                res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+                res.write('<h1>조회된 사용자 없음.</h1>');
+                res.end();
+            }
+        })
+    }else{
+        console.log('에러발생');
+        res.writeHead(200,{"Content-Type":"text/html;charset=utf8"});
+        res.write('<h1>데이터베이스에 연결 안됨</h1>');
+        res.end();
+    }
+});
 router.route('/process/adduser').post((req,res)=>{
     console.log('/process/adduser 라우팅 함수 호출');
     let paramId = req.body.id || req.query.id;
@@ -141,19 +178,37 @@ app.use('/',router);
 
 let authUser = function(db,id,password,callback){
     console.log('authUser 호출 : '+id+","+password);
-    UserModel.find({"id":id,"password":password},(err,docs)=>{
+    UserModel.findById(id,(err,results)=>{
         if(err){
             callback(err,null);
             return;
         }
-        if(docs.length >0){
-            console.log('사용자 추가'+docs.insertedCount);
-            callback(null,docs);
+        if(results.length >0){
+            if(results[0]._doc.password === password){
+                console.log('비밀번호 일치함');
+                callback(null,results);
+            }else{
+                console.log('비밀번호가 일치하지 않음');
+                callback(null,null);
+            }
         }else{
-            console.log('추가된 레코드가 없음');
+            console.log('아이디가 일치하는 사용자가 없음');
             callback(null,null);
         }
     });
+    // UserModel.find({"id":id,"password":password},(err,docs)=>{
+    //     if(err){
+    //         callback(err,null);
+    //         return;
+    //     }
+    //     if(docs.length >0){
+    //         console.log('사용자 추가'+docs.insertedCount);
+    //         callback(null,docs);
+    //     }else{
+    //         console.log('추가된 레코드가 없음');
+    //         callback(null,null);
+    //     }
+    // });
 };
 let addUser = (db,id,password,name,callback)=>{
     console.log('add User 호출'+id+" , "+password+" , "+name);
