@@ -49,9 +49,9 @@ connectDB=function(){ //몽구스를 사용할 때는 이벤트를 많이 사용
         })
         UserSchema.method('encryptPassword',function(plainText,inSalt){
             if(inSalt){
-                return crpyto.createHmac('shal',inSalt).update(plainText).digest('hex');
+                return crypto.createHmac('sha1',inSalt).update(plainText).digest('hex');
             }else{
-                return crypto.createHmac('shal',this.salt).update(plainText).digest('hext');
+                return crypto.createHmac('sha1',this.salt).update(plainText).digest('hex');
             }
         });
         UserSchema.method('makeSalt',function(){
@@ -74,7 +74,7 @@ connectDB=function(){ //몽구스를 사용할 때는 이벤트를 많이 사용
         UserSchema.static('findAll',function(callback){ //모델객체에서 사용할 수 있는 메서드를 등록
             return this.find({},callback);
         })
-        UserModel= mongoose.model('users2',UserSchema); // 기존 users와 스키마 구조가 다르기때문에 users2로 콜렉션의 이름을 변경
+        UserModel= mongoose.model('users3',UserSchema); // 기존 users와 스키마 구조가 다르기때문에 users2로 콜렉션의 이름을 변경
         console.log('UserModel 정의함');
     });
     database.on('disconnected',()=>{
@@ -216,7 +216,10 @@ let authUser = function(db,id,password,callback){
             return;
         }
         if(results.length >0){
-            if(results[0]._doc.password === password){
+            let user=new UserModel({id:id});
+            let authenticated = user.authenticate(password,results[0]._doc.salt,
+                results[0]._doc.hashed_password);
+            if(authenticated){
                 console.log('비밀번호 일치함');
                 callback(null,results);
             }else{
