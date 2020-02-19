@@ -15,6 +15,10 @@ let crypto = require('crypto');
 let expressErrorHandler= require('express-error-handler');
 
 let app = express();
+
+app.set('views',__dirname+'/views');
+app.set('view engine','ejs');
+
 console.log('congif.server_port : '+config.server_port);
 app.set('port',congif.server_port || 1234);
 app.use('/public',static(path.join(__dirname,'public')));
